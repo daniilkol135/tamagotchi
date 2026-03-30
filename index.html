@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Tamagotchi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .pet-selector {
+            padding: 30px;
+        }
+
+        .pets-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .pet-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .pet-card.dead {
+            opacity: 0.6;
+        }
+
+        .pet-card.dead::after {
+            content: "💀";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+        }
+
+        .pet-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .pet-card p {
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .create-pet {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #pet-name {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        #create-pet-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        #create-pet-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #game-area {
+            padding: 30px;
+        }
+
+        .pet-stats {
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-label {
+            width: 100px;
+            font-weight: bold;
+        }
+
+        .stat-bar {
+            flex: 1;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .pet-avatar {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .pet-emoji {
+            font-size: 150px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #feed-btn {
+            background: #ff6a6a;
+            color: white;
+        }
+
+        #play-btn {
+            background: #ffd93d;
+            color: #333;
+        }
+
+        #sleep-btn {
+            background: #6bcf7f;
+            color: white;
+        }
+
+        .events {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .events h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .events-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 600px) {
+            .actions {
+                flex-direction: column;
+            }
+            
+            .stat {
+                flex-wrap: wrap;
+            }
+            
+            .stat-label {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐾 Web Tamagotchi 🐾</h1>
+        </header>
+        
+        <div class="pet-selector">
+            <h2>Your Pets</h2>
+            <div id="pets-list" class="pets-list"></div>
+            <div class="create-pet">
+                <input type="text" id="pet-name" placeholder="Enter pet name" maxlength="20">
+                <button id="create-pet-btn">Create New Pet 🎉</button>
+            </div>
+        </div>
+        
+        <div id="game-area" style="display: none;">
+            <div class="pet-stats">
+                <div class="stat">
+                    <span class="stat-label">😋 Hunger:</span>
+                    <div class="stat-bar">
+                        <div id="hunger-bar" class="stat-fill"></div>
+                    </div>
+                    <span id="hunger-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">😊 Happiness:</span>
+                    <div class="stat-bar">
+                        <div id="happiness-bar" class="stat-fill"></div>
+                    </div>
+                    <span id="happiness-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">⚡ Energy:</span>
+                    <div class="stat-bar">
+                        <div id="energy-bar" class="stat-fill"></div>
+                    </div>
+                    <span id="energy-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">🎂 Age:</span>
+                    <span id="age-value">0</span> minutes
+                </div>
+            </div>
+            
+            <div class="pet-avatar">
+                <div id="pet-emoji" class="pet-emoji">🐣</div>
+            </div>
+            
+            <div class="actions">
+                <button id="feed-btn" class="action-btn">🍕 Feed (+20 hunger)</button>
+                <button id="play-btn" class="action-btn">🎮 Play (+15 happiness, -5 energy)</button>
+                <button id="sleep-btn" class="action-btn">😴 Sleep (+25 energy)</button>
+            </div>
+            
+            <div class="events">
+                <h3>Recent Events</h3>
+                <div id="events-list" class="events-list"></div>
+            </div>
+            
+            <button id="back-btn" class="back-btn">← Back to Pets</button>
+        </div>
+    </div>
+    
+    <script>
+        // Data storage
+        let pets = [];
+        let currentPetId = null;
+        let updateInterval = null;
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('tamagotchi_pets');
+            if (saved) {
+                pets = JSON.parse(saved);
+                // Update last update time
+                const now = Date.now();
+                pets.forEach(pet => {
+                    if (pet.isAlive) {
+                        updatePetStats(pet, now);
+                    }
+                });
+                saveData();
+            } else {
+                // Create default pets for demo
+                pets = [
+                    {
+                        id: Date.now(),
+                        name: 'Fluffy',
+                        hunger: 80,
+                        happiness: 85,
+                        energy: 90,
+                        age: 0,
+                        isAlive: true,
+                        lastUpdate: Date.now(),
+                        events: ['🎉 Fluffy was born!']
+                    }
+                ];
+                saveData();
+            }
+            renderPetsList();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('tamagotchi_pets', JSON.stringify(pets));
+        }
+
+        // Update pet stats based on time passed
+        function updatePetStats(pet, currentTime) {
+            if (!pet.isAlive) return;
+            
+            const timePassed = (currentTime - pet.lastUpdate) / (1000 * 60); // minutes
+            if (timePassed <= 0) return;
+            
+            const hungerDecrease = Math.floor(timePassed * 2);
+            const happinessDecrease = Math.floor(timePassed * 1.5);
+            const energyDecrease = Math.floor(timePassed * 1);
+            
+            pet.hunger = Math.max(0, pet.hunger - hungerDecrease);
+            pet.happiness = Math.max(0, pet.happiness - happinessDecrease);
+            pet.energy = Math.max(0, pet.energy - energyDecrease);
+            pet.age += Math.floor(timePassed);
+            
+            // Check if pet died
+            if (pet.hunger <= 0 || pet.happiness <= 0 || pet.energy <= 0) {
+                pet.isAlive = false;
+                addEvent(pet.id, `💔 ${pet.name} has passed away...`);
+            }
+            
+            pet.lastUpdate = currentTime;
+        }
+
+        // Add event to pet
+        function addEvent(petId, message) {
+            const pet = pets.find(p => p.id === petId);
+            if (pet) {
+                pet.events = pet.events || [];
+                pet.events.unshift({
+                    time: Date.now(),
+                    message: message
+                });
+                // Keep only last 20 events
+                pet.events = pet.events.slice(0, 20);
+                saveData();
+            }
+        }
+
+        // Render pets list
+        function renderPetsList() {
+            const petsList = document.getElementById('pets-list');
+            if (pets.length === 0) {
+                petsList.innerHTML = '<p style="text-align: center;">No pets yet. Create your first pet! 🎉</p>';
+                return;
+            }
+            
+            petsList.innerHTML = pets.map(pet => `
+                <div class="pet-card ${!pet.isAlive ? 'dead' : ''}" onclick="selectPet(${pet.id})">
+                    <h3>${escapeHtml(pet.name)}</h3>
+                    <p>❤️ ${pet.isAlive ? 'Alive' : 'Dead'}</p>
+                    <p>🎂 ${pet.age} minutes</p>
+                    ${pet.isAlive ? '<p>😋 ' + pet.hunger + ' 😊 ' + pet.happiness + ' ⚡ ' + pet.energy + '</p>' : ''}
+                    <button class="delete-btn" onclick="deletePet(${pet.id}, event)">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Delete pet
+        function deletePet(id, event) {
+            event.stopPropagation();
+            if (confirm('Are you sure you want to delete this pet?')) {
+                pets = pets.filter(p => p.id !== id);
+                if (currentPetId === id) {
+                    backToPets();
+                }
+                saveData();
+                renderPetsList();
+            }
+        }
+
+        // Select a pet
+        function selectPet(id) {
+            const pet = pets.find(p => p.id === id);
+            if (!pet) return;
+            
+            currentPetId = id;
+            renderGameArea();
+            document.querySelector('.pet-selector').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            
+            if (updateInterval) clearInterval(updateInterval);
+            updateInterval = setInterval(() => {
+                const updatedPet = pets.find(p => p.id === currentPetId);
+                if (updatedPet) {
+                    updatePetStats(updatedPet, Date.now());
+                    saveData();
+                    renderGameArea();
+                }
+            }, 10000);
+        }
+
+        // Render game area
+        function renderGameArea() {
+            const pet = pets.find(p => p.id === currentPetId);
+            if (!pet) return;
+            
+            if (!pet.isAlive) {
+                clearInterval(updateInterval);
+                alert(`${pet.name} has passed away... 💔`);
+                backToPets();
+                return;
+            }
+            
+            const hungerPercent = (pet.hunger / 100) * 100;
+            const happinessPercent = (pet.happiness / 100) * 100;
+            const energyPercent = (pet.energy / 100) * 100;
+            
+            document.getElementById('hunger-bar').style.width = `${hungerPercent}%`;
+            document.getElementById('hunger-value').textContent = pet.hunger;
+            document.getElementById('happiness-bar').style.width = `${happinessPercent}%`;
+            document.getElementById('happiness-value').textContent = pet.happiness;
+            document.getElementById('energy-bar').style.width = `${energyPercent}%`;
+            document.getElementById('energy-value').textContent = pet.energy;
+            document.getElementById('age-value').textContent = pet.age;
+            
+            // Change emoji based on stats
+            const emoji = document.getElementById('pet-emoji');
+            if (pet.hunger < 30) emoji.textContent = '😫';
+            else if (pet.happiness < 30) emoji.textContent = '😢';
+            else if (pet.energy < 30) emoji.textContent = '😴';
+            else emoji.textContent = '😊';
+            
+            // Render events
+            const eventsList = document.getElementById('events-list');
+            if (pet.events && pet.events.length > 0) {
+                eventsList.innerHTML = pet.events.map(event => `
+                    <div class="event-item">
+                        ${new Date(event.time).toLocaleTimeString()}: ${escapeHtml(event.message)}
+                    </div>
+                `).join('');
+            } else {
+                eventsList.innerHTML = '<div class="event-item">No events yet</div>';
+            }
+        }
+
+        // Perform action
+        function performAction(action) {
+            const pet = pets.find(p => p.id === currentPetId);
+            if (!pet || !pet.isAlive) return;
+            
+            switch(action) {
+                case 'feed':
+                    pet.hunger = Math.min(100, pet.hunger + 20);
+                    addEvent(pet.id, `🍕 ${pet.name} enjoyed a delicious meal! Hunger +20`);
+                    break;
+                case 'play':
+                    pet.happiness = Math.min(100, pet.happiness + 15);
+                    pet.energy = Math.max(0, pet.energy - 5);
+                    addEvent(pet.id, `🎮 ${pet.name} had fun playing! Happiness +15, Energy -5`);
+                    break;
+                case 'sleep':
+                    pet.energy = Math.min(100, pet.energy + 25);
+                    addEvent(pet.id, `😴 ${pet.name} had a good nap! Energy +25`);
+                    break;
+            }
+            
+            pet.lastUpdate = Date.now();
+            saveData();
+            renderGameArea();
+        }
+
+        // Create new pet
+        function createPet() {
+            const name = document.getElementById('pet-name').value.trim();
+            if (!name) {
+                alert('Please enter a name for your pet!');
+                return;
+            }
+            
+            const newPet = {
+                id: Date.now(),
+                name: name,
+                hunger: 100,
+                happiness: 100,
+                energy: 100,
+                age: 0,
+                isAlive: true,
+                lastUpdate: Date.now(),
+                events: [`🎉 ${name} was born!`]
+            };
+            
+            pets.push(newPet);
+            saveData();
+            renderPetsList();
+            document.getElementById('pet-name').value = '';
+        }
+
+        // Back to pets list
+        function backToPets() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+            currentPetId = null;
+            document.querySelector('.pet-selector').style.display = 'block';
+            document.getElementById('game-area').style.display = 'none';
+            renderPetsList();
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
+        document.getElementById('create-pet-btn').addEventListener('click', createPet);
+        document.getElementById('feed-btn').addEventListener('click', () => performAction('feed'));
+        document.getElementById('play-btn').addEventListener('click', () => performAction('play'));
+        document.getElementById('sleep-btn').addEventListener('click', () => performAction('sleep'));
+        document.getElementById('back-btn').addEventListener('click', backToPets);
+        
+        // Enter key for creating pet
+        document.getElementById('pet-name').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                createPet();
+            }
+        });
+        
+        // Initialize
+        loadData();
+        
+        // Auto-save periodically
+        setInterval(() => {
+            if (currentPetId) {
+                const pet = pets.find(p => p.id === currentPetId);
+                if (pet && pet.isAlive) {
+                    updatePetStats(pet, Date.now());
+                    saveData();
+                    renderGameArea();
+                }
+            }
+        }, 60000);
+    </script>
+</body>
+</html>
