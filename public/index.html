@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamagotchi - Virtual Pet Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🐾 Tamagotchi</h2>
+                <p>Login or Register to start playing!</p>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                    <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                </div>
+                
+                <div id="loginForm" class="auth-form active">
+                    <input type="text" id="loginUsername" placeholder="Username" autocomplete="username">
+                    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+                    <button onclick="login()">Login</button>
+                    <div id="loginError" class="error-message"></div>
+                </div>
+                
+                <div id="registerForm" class="auth-form">
+                    <input type="text" id="regUsername" placeholder="Username" autocomplete="username">
+                    <input type="email" id="regEmail" placeholder="Email" autocomplete="email">
+                    <input type="password" id="regPassword" placeholder="Password" autocomplete="new-password">
+                    <button onclick="register()">Register</button>
+                    <div id="regError" class="error-message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <div class="app-header">
+            <div class="user-info">
+                <span>👤 <span id="usernameDisplay"></span></span>
+                <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
+            </div>
+        </div>
+        
+        <div class="app-container">
+            <!-- Left Panel - Pets List -->
+            <div class="pets-panel">
+                <div class="panel-header">
+                    <h2>🐾 My Pets</h2>
+                    <div class="create-pet-form">
+                        <input type="text" id="pet-name" placeholder="Pet name..." maxlength="20">
+                        <button id="create-pet-btn">+ Create</button>
+                    </div>
+                </div>
+                <div id="pets-list" class="pets-list">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Game Area -->
+            <div class="game-panel">
+                <div id="no-pet-selected" class="no-pet">
+                    <div class="no-pet-content">
+                        <div class="no-pet-emoji">🐣</div>
+                        <h3>Select a pet to start!</h3>
+                        <p>Choose a pet from the left panel or create a new one</p>
+                    </div>
+                </div>
+                
+                <div id="game-area" style="display: none;">
+                    <div class="pet-header">
+                        <h2 id="pet-name-display"></h2>
+                        <button id="delete-pet-btn" class="delete-btn">🗑️ Delete</button>
+                    </div>
+                    
+                    <div class="pet-avatar">
+                        <div id="pet-emoji" class="pet-emoji">🐣</div>
+                    </div>
+                    
+                    <div class="pet-stats">
+                        <div class="stat">
+                            <span class="stat-label">😋 Hunger</span>
+                            <div class="stat-bar">
+                                <div id="hunger-bar" class="stat-fill"></div>
+                            </div>
+                            <span id="hunger-value" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">😊 Happiness</span>
+                            <div class="stat-bar">
+                                <div id="happiness-bar" class="stat-fill"></div>
+                            </div>
+                            <span id="happiness-value" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">⚡ Energy</span>
+                            <div class="stat-bar">
+                                <div id="energy-bar" class="stat-fill"></div>
+                            </div>
+                            <span id="energy-value" class="stat-value">0</span>
+                        </div>
+                        <div class="stat simple">
+                            <span class="stat-label">🎂 Age</span>
+                            <span id="age-value" class="stat-value">0</span>
+                            <span>minutes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button id="feed-btn" class="action-btn feed">🍕 Feed</button>
+                        <button id="play-btn" class="action-btn play">🎮 Play</button>
+                        <button id="sleep-btn" class="action-btn sleep">😴 Sleep</button>
+                    </div>
+                    
+                    <div class="events">
+                        <h3>📋 Events</h3>
+                        <div id="events-list" class="events-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
