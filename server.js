@@ -29,27 +29,26 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production'
     }
 }));
 
-// Initialize database tables
+// Initialize database tables (БЕЗ EMAIL)
 const initDatabase = async () => {
     try {
-        // Users table
+        // Users table - БЕЗ поля email
         await pool.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
                 username VARCHAR(50) UNIQUE NOT NULL,
-                email VARCHAR(100) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
         
-        // Pets table with user_id
+        // Pets table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS pets (
                 id SERIAL PRIMARY KEY,
@@ -115,7 +114,6 @@ const updatePetStats = async (pet) => {
     return pet;
 };
 
-// Auth middleware
 const requireAuth = (req, res, next) => {
     if (!req.session.userId) {
         return res.status(401).json({ error: 'Not authenticated' });
@@ -125,19 +123,23 @@ const requireAuth = (req, res, next) => {
 
 // ============ AUTH ROUTES ============
 
-// Register
+// Register - БЕЗ EMAIL
 app.post('/api/register', async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
     
-    if (!username || !email || !password) {
-        return res.status(400).json({ error: 'All fields are required' });
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password required' });
+    }
+    
+    if (password.length < 4) {
+        return res.status(400).json({ error: 'Password must be at least 4 characters' });
     }
     
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await pool.query(
-            'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email',
-            [username, email, hashedPassword]
+            'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
+            [username, hashedPassword]
         );
         
         req.session.userId = result.rows[0].id;
@@ -145,11 +147,11 @@ app.post('/api/register', async (req, res) => {
         
         res.json({ 
             success: true, 
-            user: { id: result.rows[0].id, username: result.rows[0].username, email: result.rows[0].email }
+            user: { id: result.rows[0].id, username: result.rows[0].username }
         });
     } catch (err) {
         if (err.code === '23505') {
-            res.status(400).json({ error: 'Username or email already exists' });
+            res.status(400).json({ error: 'Username already exists' });
         } else {
             res.status(500).json({ error: 'Registration failed' });
         }
@@ -186,7 +188,7 @@ app.post('/api/login', async (req, res) => {
         
         res.json({ 
             success: true, 
-            user: { id: user.id, username: user.username, email: user.email }
+            user: { id: user.id, username: user.username }
         });
     } catch (err) {
         res.status(500).json({ error: 'Login failed' });
@@ -207,7 +209,7 @@ app.get('/api/me', async (req, res) => {
     
     try {
         const result = await pool.query(
-            'SELECT id, username, email FROM users WHERE id = $1',
+            'SELECT id, username FROM users WHERE id = $1',
             [req.session.userId]
         );
         
@@ -224,7 +226,7 @@ app.get('/api/me', async (req, res) => {
 
 // ============ PET ROUTES ============
 
-// Get all pets for current user
+// Get all pets
 app.get('/api/pets', requireAuth, async (req, res) => {
     try {
         const result = await pool.query(
