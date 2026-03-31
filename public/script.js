@@ -73,15 +73,16 @@ async function login() {
 }
 
 // Register
+// Register - без email
 async function register() {
     const username = document.getElementById('regUsername').value;
-    const email = document.getElementById('regEmail').value;
     const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
     const errorDiv = document.getElementById('regError');
     
     errorDiv.innerText = '';
     
-    if (!username || !email || !password) {
+    if (!username || !password) {
         errorDiv.innerText = 'Please fill in all fields';
         return;
     }
@@ -91,11 +92,16 @@ async function register() {
         return;
     }
     
+    if (password !== confirmPassword) {
+        errorDiv.innerText = 'Passwords do not match';
+        return;
+    }
+    
     try {
         const response = await fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({ username, password })
         });
         
         const data = await response.json();
