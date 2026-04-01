@@ -3,133 +3,632 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tamagotchi - Virtual Pet Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Tamagotchi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Модальное окно */
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 400px;
+            max-width: 90%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .modal-header h2 { margin-bottom: 10px; font-size: 28px; }
+        
+        .modal-body { padding: 30px; }
+        
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .auth-form button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        /* Главное приложение */
+        #mainApp {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px;
+        }
+        
+        .app-header {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .app-container {
+            display: flex;
+            gap: 20px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            min-height: 600px;
+        }
+        
+        .pets-panel {
+            width: 300px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-right: 1px solid #e0e0e0;
+        }
+        
+        .pets-panel h2 { margin-bottom: 20px; }
+        
+        .create-pet-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .create-pet-form input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .create-pet-form button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .pets-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .pet-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .pet-card:hover { background: #f0f0ff; }
+        .pet-card.selected { border-color: #667eea; background: #f0f0ff; }
+        .pet-card.dead { opacity: 0.5; }
+        
+        .pet-name { font-size: 18px; font-weight: bold; }
+        .pet-stats-mini { font-size: 12px; color: #666; }
+        
+        .game-panel {
+            flex: 1;
+            padding: 30px;
+        }
+        
+        .no-pet {
+            text-align: center;
+            padding: 100px;
+            color: #999;
+        }
+        
+        .pet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .pet-avatar { text-align: center; font-size: 100px; margin: 20px 0; }
+        
+        .stat {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stat-label { width: 80px; font-weight: bold; }
+        
+        .stat-bar {
+            flex: 1;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .stat-fill {
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .feed { background: #ff6b6b; color: white; }
+        .play { background: #ffd93d; }
+        .sleep { background: #6bcf7f; color: white; }
+        
+        .events {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .event-item {
+            padding: 5px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .delete-btn {
+            padding: 5px 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .loading { text-align: center; padding: 20px; color: #999; }
+    </style>
 </head>
 <body>
-    <!-- Auth Modal -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🐾 Tamagotchi</h2>
-                <p>Login or Register to start playing!</p>
-            </div>
-            <div class="modal-body">
-                <div class="auth-tabs">
-                    <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-                    <button class="tab-btn" onclick="switchTab('register')">Register</button>
-                </div>
-                
-                <div id="loginForm" class="auth-form active">
-                    <input type="text" id="loginUsername" placeholder="Username" autocomplete="username">
-                    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
-                    <button onclick="login()">Login</button>
-                    <div id="loginError" class="error-message"></div>
-                </div>
-                
-                <div id="registerForm" class="auth-form">
-                    <input type="text" id="regUsername" placeholder="Username">
-                    <input type="password" id="regPassword" placeholder="Password">
-                    <input type="password" id="regConfirmPassword" placeholder="Confirm Password">
-                    <button onclick="register()">Register</button>
-                    <div id="regError" class="error-message"></div>
-                </div>
-            </div>
+
+<!-- Окно входа/регистрации -->
+<div id="authModal" class="modal">
+    <div class="modal-header">
+        <h2>🐾 Tamagotchi</h2>
+        <p>Login or Register to start playing!</p>
+    </div>
+    <div class="modal-body">
+        <div class="auth-tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('register')">Register</button>
+        </div>
+        
+        <div id="loginForm" class="auth-form active">
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <div id="loginError" class="error-message"></div>
+        </div>
+        
+        <div id="registerForm" class="auth-form">
+            <input type="text" id="regUsername" placeholder="Username">
+            <input type="password" id="regPassword" placeholder="Password">
+            <input type="password" id="regConfirmPassword" placeholder="Confirm Password">
+            <button onclick="register()">Register</button>
+            <div id="regError" class="error-message"></div>
         </div>
     </div>
+</div>
 
-    <!-- Main App -->
-    <div id="mainApp" style="display: none;">
-       <!-- Внутри mainApp должны быть эти элементы -->
-        <div class="app-header">
-            <div class="user-info">
-                <span>👤 <span id="usernameDisplay"></span></span>
-                <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
+<!-- Главное приложение -->
+<div id="mainApp" style="display: none;">
+    <div class="app-header">
+        <div class="user-info">
+            <span>👤 <span id="usernameDisplay"></span></span>
+            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
+    
+    <div class="app-container">
+        <div class="pets-panel">
+            <h2>🐾 My Pets</h2>
+            <div class="create-pet-form">
+                <input type="text" id="petName" placeholder="Pet name...">
+                <button onclick="createPet()">+ Create</button>
+            </div>
+            <div id="petsList" class="pets-list">
+                <div class="loading">Loading...</div>
             </div>
         </div>
-
-<!-- И другие элементы с ID: -->
-<!-- pets-list, pet-name-display, hunger-bar, hunger-value, и т.д. -->
         
-        <div class="app-container">
-            <!-- Left Panel - Pets List -->
-            <div class="pets-panel">
-                <div class="panel-header">
-                    <h2>🐾 My Pets</h2>
-                    <div class="create-pet-form">
-                        <input type="text" id="pet-name" placeholder="Pet name..." maxlength="20">
-                        <button id="create-pet-btn">+ Create</button>
-                    </div>
-                </div>
-                <div id="pets-list" class="pets-list">
-                    <div class="loading">Loading...</div>
-                </div>
+        <div class="game-panel">
+            <div id="noPetSelected" class="no-pet">
+                <div style="font-size: 80px;">🐣</div>
+                <h3>Select a pet to start!</h3>
             </div>
             
-            <!-- Right Panel - Game Area -->
-            <div class="game-panel">
-                <div id="no-pet-selected" class="no-pet">
-                    <div class="no-pet-content">
-                        <div class="no-pet-emoji">🐣</div>
-                        <h3>Select a pet to start!</h3>
-                        <p>Choose a pet from the left panel or create a new one</p>
+            <div id="gameArea" style="display: none;">
+                <div class="pet-header">
+                    <h2 id="petNameDisplay"></h2>
+                    <button class="delete-btn" onclick="deleteCurrentPet()">🗑️ Delete</button>
+                </div>
+                <div class="pet-avatar">
+                    <div id="petEmoji">😊</div>
+                </div>
+                <div class="pet-stats">
+                    <div class="stat">
+                        <span class="stat-label">😋 Hunger:</span>
+                        <div class="stat-bar"><div id="hungerBar" class="stat-fill" style="background:#ff6b6b; width:0%"></div></div>
+                        <span id="hungerValue">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">😊 Happiness:</span>
+                        <div class="stat-bar"><div id="happinessBar" class="stat-fill" style="background:#ffd93d; width:0%"></div></div>
+                        <span id="happinessValue">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">⚡ Energy:</span>
+                        <div class="stat-bar"><div id="energyBar" class="stat-fill" style="background:#6bcf7f; width:0%"></div></div>
+                        <span id="energyValue">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">🎂 Age:</span>
+                        <span id="ageValue">0</span> min
                     </div>
                 </div>
-                
-                <div id="game-area" style="display: none;">
-                    <div class="pet-header">
-                        <h2 id="pet-name-display"></h2>
-                        <button id="delete-pet-btn" class="delete-btn">🗑️ Delete</button>
-                    </div>
-                    
-                    <div class="pet-avatar">
-                        <div id="pet-emoji" class="pet-emoji">🐣</div>
-                    </div>
-                    
-                    <div class="pet-stats">
-                        <div class="stat">
-                            <span class="stat-label">😋 Hunger</span>
-                            <div class="stat-bar">
-                                <div id="hunger-bar" class="stat-fill"></div>
-                            </div>
-                            <span id="hunger-value" class="stat-value">0</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">😊 Happiness</span>
-                            <div class="stat-bar">
-                                <div id="happiness-bar" class="stat-fill"></div>
-                            </div>
-                            <span id="happiness-value" class="stat-value">0</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">⚡ Energy</span>
-                            <div class="stat-bar">
-                                <div id="energy-bar" class="stat-fill"></div>
-                            </div>
-                            <span id="energy-value" class="stat-value">0</span>
-                        </div>
-                        <div class="stat simple">
-                            <span class="stat-label">🎂 Age</span>
-                            <span id="age-value" class="stat-value">0</span>
-                            <span>minutes</span>
-                        </div>
-                    </div>
-                    
-                    <div class="actions">
-                        <button id="feed-btn" class="action-btn feed">🍕 Feed</button>
-                        <button id="play-btn" class="action-btn play">🎮 Play</button>
-                        <button id="sleep-btn" class="action-btn sleep">😴 Sleep</button>
-                    </div>
-                    
-                    <div class="events">
-                        <h3>📋 Events</h3>
-                        <div id="events-list" class="events-list"></div>
-                    </div>
+                <div class="actions">
+                    <button class="action-btn feed" onclick="performAction('feed')">🍕 Feed</button>
+                    <button class="action-btn play" onclick="performAction('play')">🎮 Play</button>
+                    <button class="action-btn sleep" onclick="performAction('sleep')">😴 Sleep</button>
+                </div>
+                <div class="events">
+                    <h3>📋 Events</h3>
+                    <div id="eventsList"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="script.js"></script>
+<script>
+    let currentPetId = null;
+    let updateInterval = null;
+
+    // ============ AUTH FUNCTIONS ============
+    
+    async function checkAuth() {
+        try {
+            const res = await fetch('/api/me');
+            const data = await res.json();
+            
+            if (data.user) {
+                document.getElementById('usernameDisplay').innerText = data.user.username;
+                document.getElementById('authModal').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                loadPets();
+            } else {
+                document.getElementById('authModal').style.display = 'block';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        } catch (err) {
+            console.error('Auth error:', err);
+        }
+    }
+    
+    function switchTab(tab) {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const tabs = document.querySelectorAll('.tab-btn');
+        
+        if (tab === 'login') {
+            loginForm.classList.add('active');
+            registerForm.classList.remove('active');
+            tabs[0].classList.add('active');
+            tabs[1].classList.remove('active');
+        } else {
+            loginForm.classList.remove('active');
+            registerForm.classList.add('active');
+            tabs[0].classList.remove('active');
+            tabs[1].classList.add('active');
+        }
+    }
+    
+    async function login() {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        const errorDiv = document.getElementById('loginError');
+        
+        errorDiv.innerText = '';
+        
+        if (!username || !password) {
+            errorDiv.innerText = 'Fill all fields';
+            return;
+        }
+        
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                checkAuth();
+            } else {
+                errorDiv.innerText = data.error || 'Login failed';
+            }
+        } catch (err) {
+            errorDiv.innerText = 'Network error';
+        }
+    }
+    
+    async function register() {
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirmPassword').value;
+        const errorDiv = document.getElementById('regError');
+        
+        errorDiv.innerText = '';
+        
+        if (!username || !password) {
+            errorDiv.innerText = 'Fill all fields';
+            return;
+        }
+        
+        if (password.length < 4) {
+            errorDiv.innerText = 'Password too short (min 4)';
+            return;
+        }
+        
+        if (password !== confirm) {
+            errorDiv.innerText = 'Passwords do not match';
+            return;
+        }
+        
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                checkAuth();
+            } else {
+                errorDiv.innerText = data.error || 'Registration failed';
+            }
+        } catch (err) {
+            errorDiv.innerText = 'Network error';
+        }
+    }
+    
+    async function logout() {
+        await fetch('/api/logout', { method: 'POST' });
+        checkAuth();
+    }
+    
+    // ============ PET FUNCTIONS ============
+    
+    async function loadPets() {
+        try {
+            const res = await fetch('/api/pets');
+            const pets = await res.json();
+            const container = document.getElementById('petsList');
+            
+            if (pets.length === 0) {
+                container.innerHTML = '<div class="loading">No pets. Create one!</div>';
+                return;
+            }
+            
+            container.innerHTML = pets.map(pet => `
+                <div class="pet-card ${!pet.is_alive ? 'dead' : ''} ${currentPetId === pet.id ? 'selected' : ''}" onclick="selectPet(${pet.id})">
+                    <div class="pet-name">${pet.name} ${!pet.is_alive ? '💀' : ''}</div>
+                    <div class="pet-stats-mini">🍕${pet.hunger} 😊${pet.happiness} ⚡${pet.energy}</div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error('Load pets error:', err);
+        }
+    }
+    
+    async function selectPet(id) {
+        currentPetId = id;
+        await loadPetStats();
+        document.getElementById('noPetSelected').style.display = 'none';
+        document.getElementById('gameArea').style.display = 'block';
+        
+        if (updateInterval) clearInterval(updateInterval);
+        updateInterval = setInterval(loadPetStats, 10000);
+        loadPets();
+    }
+    
+    async function loadPetStats() {
+        if (!currentPetId) return;
+        
+        try {
+            const res = await fetch(`/api/pets/${currentPetId}`);
+            const pet = await res.json();
+            
+            if (!pet.is_alive) {
+                clearInterval(updateInterval);
+                alert(`${pet.name} died... 💔`);
+                backToPets();
+                return;
+            }
+            
+            document.getElementById('petNameDisplay').innerText = pet.name;
+            document.getElementById('hungerBar').style.width = `${pet.hunger}%`;
+            document.getElementById('hungerValue').innerText = pet.hunger;
+            document.getElementById('happinessBar').style.width = `${pet.happiness}%`;
+            document.getElementById('happinessValue').innerText = pet.happiness;
+            document.getElementById('energyBar').style.width = `${pet.energy}%`;
+            document.getElementById('energyValue').innerText = pet.energy;
+            document.getElementById('ageValue').innerText = pet.age;
+            
+            const emoji = document.getElementById('petEmoji');
+            if (pet.hunger < 30) emoji.innerText = '😫';
+            else if (pet.happiness < 30) emoji.innerText = '😢';
+            else if (pet.energy < 30) emoji.innerText = '😴';
+            else emoji.innerText = '😊';
+            
+            await loadEvents();
+        } catch (err) {
+            console.error('Load stats error:', err);
+        }
+    }
+    
+    async function loadEvents() {
+        try {
+            const res = await fetch(`/api/pets/${currentPetId}/events`);
+            const events = await res.json();
+            const container = document.getElementById('eventsList');
+            
+            if (events.length === 0) {
+                container.innerHTML = '<div class="event-item">No events</div>';
+                return;
+            }
+            
+            container.innerHTML = events.map(e => `
+                <div class="event-item">${new Date(e.created_at).toLocaleTimeString()}: ${e.message}</div>
+            `).join('');
+        } catch (err) {
+            console.error('Load events error:', err);
+        }
+    }
+    
+    async function performAction(action) {
+        if (!currentPetId) return;
+        
+        try {
+            await fetch(`/api/pets/${currentPetId}/${action}`, { method: 'POST' });
+            await loadPetStats();
+        } catch (err) {
+            console.error('Action error:', err);
+        }
+    }
+    
+    async function createPet() {
+        const name = document.getElementById('petName').value.trim();
+        if (!name) {
+            alert('Enter a name!');
+            return;
+        }
+        
+        try {
+            await fetch('/api/pets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            document.getElementById('petName').value = '';
+            loadPets();
+        } catch (err) {
+            console.error('Create pet error:', err);
+        }
+    }
+    
+    async function deleteCurrentPet() {
+        if (!currentPetId) return;
+        if (confirm('Delete this pet?')) {
+            await fetch(`/api/pets/${currentPetId}`, { method: 'DELETE' });
+            backToPets();
+            loadPets();
+        }
+    }
+    
+    function backToPets() {
+        if (updateInterval) clearInterval(updateInterval);
+        currentPetId = null;
+        document.getElementById('noPetSelected').style.display = 'block';
+        document.getElementById('gameArea').style.display = 'none';
+    }
+    
+    // Запуск
+    checkAuth();
+</script>
+
 </body>
 </html>
