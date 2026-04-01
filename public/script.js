@@ -1,18 +1,23 @@
 let currentPetId = null;
 let updateInterval = null;
 
-// Check if user is logged in
+// Проверка авторизации при загрузке
 async function checkAuth() {
+    console.log('Проверка авторизации...');
     try {
         const response = await fetch('/api/me');
         const data = await response.json();
         
+        console.log('Ответ /api/me:', data);
+        
         if (data.user) {
+            // Пользователь авторизован — показываем игру
             document.getElementById('usernameDisplay').innerText = data.user.username;
             document.getElementById('authModal').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             await loadPets();
         } else {
+            // Пользователь не авторизован — показываем окно входа
             document.getElementById('authModal').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
         }
@@ -21,7 +26,7 @@ async function checkAuth() {
     }
 }
 
-// Switch between login and register tabs
+// Переключение табов (Login/Register)
 function switchTab(tab) {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
@@ -40,7 +45,7 @@ function switchTab(tab) {
     }
 }
 
-// Login
+// Вход
 async function login() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
@@ -63,7 +68,8 @@ async function login() {
         const data = await response.json();
         
         if (response.ok) {
-            checkAuth();
+            // Успешный вход — проверяем авторизацию снова
+            await checkAuth();
         } else {
             errorDiv.innerText = data.error || 'Login failed';
         }
@@ -72,8 +78,7 @@ async function login() {
     }
 }
 
-// Register
-// Register - без email
+// Регистрация
 async function register() {
     const username = document.getElementById('regUsername').value;
     const password = document.getElementById('regPassword').value;
@@ -107,7 +112,8 @@ async function register() {
         const data = await response.json();
         
         if (response.ok) {
-            checkAuth();
+            // Успешная регистрация — проверяем авторизацию снова
+            await checkAuth();
         } else {
             errorDiv.innerText = data.error || 'Registration failed';
         }
@@ -116,13 +122,13 @@ async function register() {
     }
 }
 
-// Logout
+// Выход
 async function logout() {
     await fetch('/api/logout', { method: 'POST' });
-    checkAuth();
+    await checkAuth();
 }
 
-// Load pets
+// Загрузка списка питомцев
 async function loadPets() {
     try {
         const response = await fetch('/api/pets');
@@ -146,7 +152,7 @@ async function loadPets() {
     }
 }
 
-// Select a pet
+// Выбор питомца
 async function selectPet(id) {
     currentPetId = id;
     await loadPetStats();
@@ -158,7 +164,7 @@ async function selectPet(id) {
     await loadPets();
 }
 
-// Load pet stats
+// Загрузка статистики питомца
 async function loadPetStats() {
     if (!currentPetId) return;
     
@@ -173,35 +179,28 @@ async function loadPetStats() {
             return;
         }
         
-        updateStatsUI(pet);
+        document.getElementById('pet-name-display').innerText = pet.name;
+        document.getElementById('hunger-bar').style.width = `${pet.hunger}%`;
+        document.getElementById('hunger-value').innerText = pet.hunger;
+        document.getElementById('happiness-bar').style.width = `${pet.happiness}%`;
+        document.getElementById('happiness-value').innerText = pet.happiness;
+        document.getElementById('energy-bar').style.width = `${pet.energy}%`;
+        document.getElementById('energy-value').innerText = pet.energy;
+        document.getElementById('age-value').innerText = pet.age;
+        
+        const emoji = document.getElementById('pet-emoji');
+        if (pet.hunger < 30) emoji.innerText = '😫';
+        else if (pet.happiness < 30) emoji.innerText = '😢';
+        else if (pet.energy < 30) emoji.innerText = '😴';
+        else emoji.innerText = '😊';
+        
         await loadEvents();
     } catch (error) {
         console.error('Error loading pet stats:', error);
     }
 }
 
-// Update UI with stats
-function updateStatsUI(pet) {
-    document.getElementById('pet-name-display').innerText = pet.name;
-    document.getElementById('hunger-bar').style.width = `${pet.hunger}%`;
-    document.getElementById('hunger-bar').innerHTML = pet.hunger > 15 ? `${pet.hunger}%` : '';
-    document.getElementById('hunger-value').innerText = pet.hunger;
-    document.getElementById('happiness-bar').style.width = `${pet.happiness}%`;
-    document.getElementById('happiness-bar').innerHTML = pet.happiness > 15 ? `${pet.happiness}%` : '';
-    document.getElementById('happiness-value').innerText = pet.happiness;
-    document.getElementById('energy-bar').style.width = `${pet.energy}%`;
-    document.getElementById('energy-bar').innerHTML = pet.energy > 15 ? `${pet.energy}%` : '';
-    document.getElementById('energy-value').innerText = pet.energy;
-    document.getElementById('age-value').innerText = pet.age;
-    
-    const emoji = document.getElementById('pet-emoji');
-    if (pet.hunger < 30) emoji.innerText = '😫';
-    else if (pet.happiness < 30) emoji.innerText = '😢';
-    else if (pet.energy < 30) emoji.innerText = '😴';
-    else emoji.innerText = '😊';
-}
-
-// Load events
+// Загрузка событий
 async function loadEvents() {
     try {
         const response = await fetch(`/api/pets/${currentPetId}/events`);
@@ -223,7 +222,7 @@ async function loadEvents() {
     }
 }
 
-// Perform action
+// Действия (кормить, играть, спать)
 async function performAction(action) {
     if (!currentPetId) return;
     
@@ -236,7 +235,7 @@ async function performAction(action) {
             await loadPetStats();
         } else {
             const error = await response.json();
-            if (error.error.includes('dead')) {
+            if (error.error && error.error.includes('dead')) {
                 backToPets();
             }
         }
@@ -245,7 +244,7 @@ async function performAction(action) {
     }
 }
 
-// Create new pet
+// Создание питомца
 async function createPet() {
     const name = document.getElementById('pet-name').value.trim();
     if (!name) {
@@ -271,10 +270,10 @@ async function createPet() {
     }
 }
 
-// Delete current pet
+// Удаление текущего питомца
 async function deleteCurrentPet() {
     if (!currentPetId) return;
-    if (confirm('Are you sure you want to delete this pet? This action cannot be undone!')) {
+    if (confirm('Are you sure you want to delete this pet?')) {
         try {
             await fetch(`/api/pets/${currentPetId}`, { method: 'DELETE' });
             backToPets();
@@ -285,7 +284,7 @@ async function deleteCurrentPet() {
     }
 }
 
-// Back to pets list
+// Назад к списку питомцев
 function backToPets() {
     if (updateInterval) {
         clearInterval(updateInterval);
@@ -297,35 +296,33 @@ function backToPets() {
     loadPets();
 }
 
-// Escape HTML
+// Экранирование HTML
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-// Event listeners
-document.getElementById('create-pet-btn').addEventListener('click', createPet);
-document.getElementById('feed-btn').addEventListener('click', () => performAction('feed'));
-document.getElementById('play-btn').addEventListener('click', () => performAction('play'));
-document.getElementById('sleep-btn').addEventListener('click', () => performAction('sleep'));
-document.getElementById('delete-pet-btn').addEventListener('click', deleteCurrentPet);
-document.getElementById('logoutBtn').addEventListener('click', logout);
+// Обработчики событий
+document.getElementById('create-pet-btn')?.addEventListener('click', createPet);
+document.getElementById('feed-btn')?.addEventListener('click', () => performAction('feed'));
+document.getElementById('play-btn')?.addEventListener('click', () => performAction('play'));
+document.getElementById('sleep-btn')?.addEventListener('click', () => performAction('sleep'));
+document.getElementById('delete-pet-btn')?.addEventListener('click', deleteCurrentPet);
+document.getElementById('logoutBtn')?.addEventListener('click', logout);
 
-// Enter key for creating pet
-document.getElementById('pet-name').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        createPet();
-    }
+// Enter для создания питомца
+document.getElementById('pet-name')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') createPet();
 });
 
-// Enter key for login/register
-document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+// Enter для входа/регистрации
+document.getElementById('loginPassword')?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') login();
 });
-document.getElementById('regPassword').addEventListener('keypress', (e) => {
+document.getElementById('regPassword')?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') register();
 });
 
-// Initialize
+// Запуск проверки авторизации
 checkAuth();
