@@ -14,8 +14,6 @@
             justify-content: center;
             align-items: center;
         }
-        
-        /* Модальное окно */
         .modal {
             background: white;
             border-radius: 20px;
@@ -24,55 +22,25 @@
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        
         .modal-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             text-align: center;
         }
-        
-        .modal-header h2 { margin-bottom: 10px; font-size: 28px; }
-        
+        .modal-header h2 { margin-bottom: 10px; }
         .modal-body { padding: 30px; }
-        
-        .auth-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: #f0f0f0;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        
-        .tab-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-        
         .auth-form input {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 14px;
         }
-        
         .auth-form button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
             border: none;
             border-radius: 8px;
@@ -80,21 +48,17 @@
             font-size: 16px;
             font-weight: bold;
         }
-        
         .error-message {
             color: red;
             font-size: 12px;
             margin-top: 10px;
             text-align: center;
         }
-        
-        /* Главное приложение */
         #mainApp {
             width: 100%;
             max-width: 1200px;
             margin: 20px;
         }
-        
         .app-header {
             background: white;
             padding: 15px 20px;
@@ -103,13 +67,6 @@
             display: flex;
             justify-content: flex-end;
         }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
         .logout-btn {
             padding: 8px 16px;
             background: #dc3545;
@@ -117,8 +74,8 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            margin-left: 15px;
         }
-        
         .app-container {
             display: flex;
             gap: 20px;
@@ -127,29 +84,24 @@
             overflow: hidden;
             min-height: 600px;
         }
-        
         .pets-panel {
             width: 300px;
             background: #f8f9fa;
             padding: 20px;
             border-right: 1px solid #e0e0e0;
         }
-        
         .pets-panel h2 { margin-bottom: 20px; }
-        
         .create-pet-form {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
         }
-        
         .create-pet-form input {
             flex: 1;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
         }
-        
         .create-pet-form button {
             padding: 10px 20px;
             background: #667eea;
@@ -158,12 +110,10 @@
             border-radius: 8px;
             cursor: pointer;
         }
-        
         .pets-list {
             max-height: 400px;
             overflow-y: auto;
         }
-        
         .pet-card {
             background: white;
             padding: 15px;
@@ -172,43 +122,26 @@
             cursor: pointer;
             border: 2px solid transparent;
         }
-        
         .pet-card:hover { background: #f0f0ff; }
         .pet-card.selected { border-color: #667eea; background: #f0f0ff; }
-        .pet-card.dead { opacity: 0.5; }
-        
         .pet-name { font-size: 18px; font-weight: bold; }
-        .pet-stats-mini { font-size: 12px; color: #666; }
-        
         .game-panel {
             flex: 1;
             padding: 30px;
         }
-        
         .no-pet {
             text-align: center;
             padding: 100px;
             color: #999;
         }
-        
-        .pet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
         .pet-avatar { text-align: center; font-size: 100px; margin: 20px 0; }
-        
         .stat {
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
-        .stat-label { width: 80px; font-weight: bold; }
-        
+        .stat-label { width: 80px; }
         .stat-bar {
             flex: 1;
             height: 30px;
@@ -216,19 +149,16 @@
             border-radius: 15px;
             overflow: hidden;
         }
-        
         .stat-fill {
             height: 100%;
             transition: width 0.3s;
         }
-        
         .actions {
             display: flex;
             gap: 15px;
             justify-content: center;
             margin: 30px 0;
         }
-        
         .action-btn {
             padding: 12px 24px;
             border: none;
@@ -236,11 +166,9 @@
             cursor: pointer;
             font-weight: bold;
         }
-        
         .feed { background: #ff6b6b; color: white; }
         .play { background: #ffd93d; }
         .sleep { background: #6bcf7f; color: white; }
-        
         .events {
             background: #f9f9f9;
             border-radius: 10px;
@@ -249,13 +177,11 @@
             max-height: 200px;
             overflow-y: auto;
         }
-        
         .event-item {
             padding: 5px 0;
             font-size: 12px;
             border-bottom: 1px solid #eee;
         }
-        
         .delete-btn {
             padding: 5px 10px;
             background: #dc3545;
@@ -264,47 +190,44 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        
-        .loading { text-align: center; padding: 20px; color: #999; }
     </style>
 </head>
 <body>
 
-<!-- Окно входа/регистрации -->
-<div id="authModal" class="modal">
-    <div class="modal-header">
-        <h2>🐾 Tamagotchi</h2>
-        <p>Login or Register to start playing!</p>
-    </div>
-    <div class="modal-body">
-        <div class="auth-tabs">
-            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-            <button class="tab-btn" onclick="switchTab('register')">Register</button>
+<!-- СТРАНИЦА 1: ВХОД -->
+<div id="authModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>🐾 Tamagotchi</h2>
+            <p>Login to start playing!</p>
         </div>
-        
-        <div id="loginForm" class="auth-form active">
-            <input type="text" id="loginUsername" placeholder="Username">
-            <input type="password" id="loginPassword" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <div id="loginError" class="error-message"></div>
-        </div>
-        
-        <div id="registerForm" class="auth-form">
-            <input type="text" id="regUsername" placeholder="Username">
-            <input type="password" id="regPassword" placeholder="Password">
-            <input type="password" id="regConfirmPassword" placeholder="Confirm Password">
-            <button onclick="register()">Register</button>
-            <div id="regError" class="error-message"></div>
+        <div class="modal-body">
+            <div class="auth-form">
+                <input type="text" id="loginUsername" placeholder="Username">
+                <input type="password" id="loginPassword" placeholder="Password">
+                <button id="loginButton">Login</button>
+                <div id="loginError" class="error-message"></div>
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <p>No account? <button id="showRegisterBtn" style="background: none; border: none; color: #667eea; cursor: pointer;">Register</button></p>
+            </div>
+            <div id="registerForm" style="display: none; margin-top: 20px;">
+                <input type="text" id="regUsername" placeholder="Username">
+                <input type="password" id="regPassword" placeholder="Password">
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password">
+                <button id="registerButton">Register</button>
+                <div id="regError" class="error-message"></div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Главное приложение -->
+<!-- СТРАНИЦА 2: ИГРА -->
 <div id="mainApp" style="display: none;">
     <div class="app-header">
         <div class="user-info">
             <span>👤 <span id="usernameDisplay"></span></span>
-            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            <button id="logoutButton" class="logout-btn">🚪 Logout</button>
         </div>
     </div>
     
@@ -313,10 +236,10 @@
             <h2>🐾 My Pets</h2>
             <div class="create-pet-form">
                 <input type="text" id="petName" placeholder="Pet name...">
-                <button onclick="createPet()">+ Create</button>
+                <button id="createPetButton">+ Create</button>
             </div>
             <div id="petsList" class="pets-list">
-                <div class="loading">Loading...</div>
+                <div>Loading...</div>
             </div>
         </div>
         
@@ -327,9 +250,9 @@
             </div>
             
             <div id="gameArea" style="display: none;">
-                <div class="pet-header">
+                <div style="display: flex; justify-content: space-between;">
                     <h2 id="petNameDisplay"></h2>
-                    <button class="delete-btn" onclick="deleteCurrentPet()">🗑️ Delete</button>
+                    <button id="deletePetButton" class="delete-btn">🗑️ Delete</button>
                 </div>
                 <div class="pet-avatar">
                     <div id="petEmoji">😊</div>
@@ -356,9 +279,9 @@
                     </div>
                 </div>
                 <div class="actions">
-                    <button class="action-btn feed" onclick="performAction('feed')">🍕 Feed</button>
-                    <button class="action-btn play" onclick="performAction('play')">🎮 Play</button>
-                    <button class="action-btn sleep" onclick="performAction('sleep')">😴 Sleep</button>
+                    <button id="feedButton" class="action-btn feed">🍕 Feed</button>
+                    <button id="playButton" class="action-btn play">🎮 Play</button>
+                    <button id="sleepButton" class="action-btn sleep">😴 Sleep</button>
                 </div>
                 <div class="events">
                     <h3>📋 Events</h3>
@@ -372,51 +295,57 @@
 <script>
     let currentPetId = null;
     let updateInterval = null;
-
-    // ============ AUTH FUNCTIONS ============
+    
+    // ============ DOM Elements ============
+    const authModal = document.getElementById('authModal');
+    const mainApp = document.getElementById('mainApp');
+    const loginButton = document.getElementById('loginButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const showRegisterBtn = document.getElementById('showRegisterBtn');
+    const registerForm = document.getElementById('registerForm');
+    const registerButton = document.getElementById('registerButton');
+    const createPetButton = document.getElementById('createPetButton');
+    const feedButton = document.getElementById('feedButton');
+    const playButton = document.getElementById('playButton');
+    const sleepButton = document.getElementById('sleepButton');
+    const deletePetButton = document.getElementById('deletePetButton');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const petNameInput = document.getElementById('petName');
+    
+    // ============ Helper Functions ============
+    function showGame() {
+        authModal.style.display = 'none';
+        mainApp.style.display = 'block';
+    }
+    
+    function showAuth() {
+        authModal.style.display = 'block';
+        mainApp.style.display = 'none';
+        registerForm.style.display = 'none';
+    }
     
     async function checkAuth() {
         try {
             const res = await fetch('/api/me');
             const data = await res.json();
-            
             if (data.user) {
-                document.getElementById('usernameDisplay').innerText = data.user.username;
-                document.getElementById('authModal').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
+                usernameDisplay.innerText = data.user.username;
+                showGame();
                 loadPets();
             } else {
-                document.getElementById('authModal').style.display = 'block';
-                document.getElementById('mainApp').style.display = 'none';
+                showAuth();
             }
         } catch (err) {
             console.error('Auth error:', err);
+            showAuth();
         }
     }
     
-    function switchTab(tab) {
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const tabs = document.querySelectorAll('.tab-btn');
-        
-        if (tab === 'login') {
-            loginForm.classList.add('active');
-            registerForm.classList.remove('active');
-            tabs[0].classList.add('active');
-            tabs[1].classList.remove('active');
-        } else {
-            loginForm.classList.remove('active');
-            registerForm.classList.add('active');
-            tabs[0].classList.remove('active');
-            tabs[1].classList.add('active');
-        }
-    }
-    
-    async function login() {
+    // ============ Login/Register ============
+    loginButton.onclick = async () => {
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
         const errorDiv = document.getElementById('loginError');
-        
         errorDiv.innerText = '';
         
         if (!username || !password) {
@@ -430,9 +359,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
-            
             const data = await res.json();
-            
             if (res.ok) {
                 checkAuth();
             } else {
@@ -441,26 +368,28 @@
         } catch (err) {
             errorDiv.innerText = 'Network error';
         }
-    }
+    };
     
-    async function register() {
+    showRegisterBtn.onclick = () => {
+        registerForm.style.display = 'block';
+        showRegisterBtn.style.display = 'none';
+    };
+    
+    registerButton.onclick = async () => {
         const username = document.getElementById('regUsername').value;
         const password = document.getElementById('regPassword').value;
         const confirm = document.getElementById('regConfirmPassword').value;
         const errorDiv = document.getElementById('regError');
-        
         errorDiv.innerText = '';
         
         if (!username || !password) {
             errorDiv.innerText = 'Fill all fields';
             return;
         }
-        
         if (password.length < 4) {
             errorDiv.innerText = 'Password too short (min 4)';
             return;
         }
-        
         if (password !== confirm) {
             errorDiv.innerText = 'Passwords do not match';
             return;
@@ -472,9 +401,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
-            
             const data = await res.json();
-            
             if (res.ok) {
                 checkAuth();
             } else {
@@ -483,62 +410,55 @@
         } catch (err) {
             errorDiv.innerText = 'Network error';
         }
-    }
+    };
     
-    async function logout() {
+    logoutButton.onclick = async () => {
         await fetch('/api/logout', { method: 'POST' });
         checkAuth();
-    }
+    };
     
-    // ============ PET FUNCTIONS ============
-    
+    // ============ Pet Functions ============
     async function loadPets() {
         try {
             const res = await fetch('/api/pets');
             const pets = await res.json();
             const container = document.getElementById('petsList');
-            
             if (pets.length === 0) {
-                container.innerHTML = '<div class="loading">No pets. Create one!</div>';
+                container.innerHTML = '<div>No pets. Create one!</div>';
                 return;
             }
-            
             container.innerHTML = pets.map(pet => `
-                <div class="pet-card ${!pet.is_alive ? 'dead' : ''} ${currentPetId === pet.id ? 'selected' : ''}" onclick="selectPet(${pet.id})">
+                <div class="pet-card ${currentPetId === pet.id ? 'selected' : ''}" onclick="selectPet(${pet.id})">
                     <div class="pet-name">${pet.name} ${!pet.is_alive ? '💀' : ''}</div>
-                    <div class="pet-stats-mini">🍕${pet.hunger} 😊${pet.happiness} ⚡${pet.energy}</div>
+                    <div>🍕${pet.hunger} 😊${pet.happiness} ⚡${pet.energy}</div>
                 </div>
             `).join('');
         } catch (err) {
-            console.error('Load pets error:', err);
+            console.error(err);
         }
     }
     
-    async function selectPet(id) {
+    window.selectPet = async (id) => {
         currentPetId = id;
         await loadPetStats();
         document.getElementById('noPetSelected').style.display = 'none';
         document.getElementById('gameArea').style.display = 'block';
-        
         if (updateInterval) clearInterval(updateInterval);
         updateInterval = setInterval(loadPetStats, 10000);
         loadPets();
-    }
+    };
     
     async function loadPetStats() {
         if (!currentPetId) return;
-        
         try {
             const res = await fetch(`/api/pets/${currentPetId}`);
             const pet = await res.json();
-            
             if (!pet.is_alive) {
                 clearInterval(updateInterval);
-                alert(`${pet.name} died... 💔`);
+                alert(`${pet.name} died...`);
                 backToPets();
                 return;
             }
-            
             document.getElementById('petNameDisplay').innerText = pet.name;
             document.getElementById('hungerBar').style.width = `${pet.hunger}%`;
             document.getElementById('hungerValue').innerText = pet.hunger;
@@ -556,7 +476,7 @@
             
             await loadEvents();
         } catch (err) {
-            console.error('Load stats error:', err);
+            console.error(err);
         }
     }
     
@@ -565,59 +485,59 @@
             const res = await fetch(`/api/pets/${currentPetId}/events`);
             const events = await res.json();
             const container = document.getElementById('eventsList');
-            
             if (events.length === 0) {
                 container.innerHTML = '<div class="event-item">No events</div>';
                 return;
             }
-            
             container.innerHTML = events.map(e => `
                 <div class="event-item">${new Date(e.created_at).toLocaleTimeString()}: ${e.message}</div>
             `).join('');
         } catch (err) {
-            console.error('Load events error:', err);
+            console.error(err);
         }
     }
     
     async function performAction(action) {
         if (!currentPetId) return;
-        
         try {
             await fetch(`/api/pets/${currentPetId}/${action}`, { method: 'POST' });
             await loadPetStats();
         } catch (err) {
-            console.error('Action error:', err);
+            console.error(err);
         }
     }
     
-    async function createPet() {
-        const name = document.getElementById('petName').value.trim();
+    createPetButton.onclick = async () => {
+        const name = petNameInput.value.trim();
         if (!name) {
             alert('Enter a name!');
             return;
         }
-        
         try {
             await fetch('/api/pets', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name })
             });
-            document.getElementById('petName').value = '';
+            petNameInput.value = '';
             loadPets();
         } catch (err) {
-            console.error('Create pet error:', err);
+            console.error(err);
         }
-    }
+    };
     
-    async function deleteCurrentPet() {
+    feedButton.onclick = () => performAction('feed');
+    playButton.onclick = () => performAction('play');
+    sleepButton.onclick = () => performAction('sleep');
+    
+    deletePetButton.onclick = async () => {
         if (!currentPetId) return;
         if (confirm('Delete this pet?')) {
             await fetch(`/api/pets/${currentPetId}`, { method: 'DELETE' });
             backToPets();
             loadPets();
         }
-    }
+    };
     
     function backToPets() {
         if (updateInterval) clearInterval(updateInterval);
